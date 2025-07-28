@@ -16,10 +16,13 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects"
 import { NavBar } from "@/components/ui/tubelight-navbar"
 import { TestimonialSlider } from "@/components/ui/testimonial-slider"
+import { CreativePricingDemo } from "@/components/ui/creative-pricing-demo"
+import Testimonials from "@/components/ui/testimonials-columns"
+import { WhyChooseUsSection } from "@/components/ui/why-choose-us-section"
+import { PluginCard } from "@/components/ui/plugin-card"
 
 export default function LandingPage() {
   const navItems = [
@@ -285,55 +288,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Meet Your Mentors */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Meet Your Mentors</h2>
-          </div>
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              {
-                name: "Dr. Sarah Chen",
-                title: "Education Technology Expert",
-                image: "/placeholder.svg?height=300&width=300",
-              },
-              {
-                name: "Prof. Michael Rodriguez",
-                title: "AI Learning Specialist",
-                image: "/placeholder.svg?height=300&width=300",
-              },
-              {
-                name: "Dr. Emily Johnson",
-                title: "Classroom Innovation Lead",
-                image: "/placeholder.svg?height=300&width=300",
-              },
-              {
-                name: "Dr. James Wilson",
-                title: "Student Engagement Expert",
-                image: "/placeholder.svg?height=300&width=300",
-              },
-            ].map((mentor, index) => (
-              <Card
-                key={index}
-                className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white rounded-2xl overflow-hidden"
-              >
-                <CardContent className="p-0">
-                  <img
-                    src={mentor.image || "/placeholder.svg"}
-                    alt={mentor.name}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="p-6 text-center">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{mentor.name}</h3>
-                    <p className="text-gray-600">{mentor.title}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+  
 
       {/* Features by User Type */}
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -341,219 +296,88 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Find the Right Fit for You</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white rounded-2xl overflow-hidden">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">For Teachers</h3>
-                <p className="text-lg text-gray-600 mb-6">Plug & Play</p>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Easy PowerPoint integration
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Pre-built quiz templates
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Real-time student feedback
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white rounded-2xl overflow-hidden">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-lime-500 to-lime-600 rounded-2xl flex items-center justify-center mb-6">
-                  <Smartphone className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">For Students</h3>
-                <p className="text-lg text-gray-600 mb-6">No App, Just Scan</p>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    QR code access
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Works on any device
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Anonymous participation
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white rounded-2xl overflow-hidden">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center mb-6">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">For Admins</h3>
-                <p className="text-lg text-gray-600 mb-6">Analytics Dashboard</p>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Institution-wide insights
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Performance tracking
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    Custom reporting
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-3 gap-8 justify-items-center">
+            <PluginCard
+              title="ClassroomAI Teacher"
+              subtitle="PowerPoint Integration"
+              description="Transform your existing PowerPoint presentations into interactive learning experiences with AI-powered engagement tools."
+              iconBg="#3B82F6"
+              iconContent="T"
+              buttonText="Get Started"
+              statsText="50,000+ teachers using"
+              highlightWord="interactive"
+              onInstall={() => console.log("Teacher plan selected")}
+            />
+            
+            <PluginCard
+              title="ClassroomAI Student"
+              subtitle="QR Code Access"
+              description="Join classroom sessions instantly with just a QR code scan. No app downloads required, works on any device."
+              iconBg="#10B981"
+              iconContent="S"
+              buttonText="Join Session"
+              statsText="500,000+ students engaged"
+              highlightWord="instant"
+              onInstall={() => console.log("Student access selected")}
+            />
+            
+            <PluginCard
+              title="ClassroomAI Admin"
+              subtitle="Analytics Dashboard"
+              description="Monitor institution-wide engagement metrics and performance analytics with comprehensive reporting tools."
+              iconBg="#F59E0B"
+              iconContent="A"
+              buttonText="View Analytics"
+              statsText="1,000+ institutions"
+              highlightWord="comprehensive"
+              onInstall={() => console.log("Admin dashboard selected")}
+            />
           </div>
         </div>
       </section>
 
-      {/* Success Stories */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      {/* Success Stories - New Testimonials Component */}
+      <Testimonials />
+
+      {/* Why Choose Us Section with Glassmorphism Cards */}
+      <WhyChooseUsSection />
+
+      {/* Creative Pricing Section */}
+      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <CreativePricingDemo />
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Success Stories</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
           </div>
-          <Card className="border-0 shadow-2xl bg-white rounded-3xl overflow-hidden">
-            <CardContent className="p-12">
-              <div className="flex items-center mb-6">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <blockquote className="text-2xl md:text-3xl text-gray-900 font-medium leading-relaxed mb-8">
-                "I've never seen my classmates this active during lectures. The AI quizzes pop up at exactly the right
-                moments, and everyone actually participates!"
-              </blockquote>
-              <div className="flex items-center">
-                <img
-                  src="/placeholder.svg?height=60&width=60"
-                  alt="Student testimonial"
-                  className="w-15 h-15 rounded-full mr-4"
-                />
-                <div>
-                  <div className="font-semibold text-gray-900">Alex Thompson</div>
-                  <div className="text-gray-600">Computer Science Student, MIT</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Flexible Plans for Every Learner</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Starter Plan */}
-            <Card className="border-0 shadow-lg bg-white rounded-2xl overflow-hidden">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Starter</h3>
-                <div className="text-4xl font-bold text-gray-900 mb-6">
-                  $29<span className="text-lg text-gray-600 font-normal">/mo</span>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Up to 50 quizzes/month</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">1 classroom</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Basic analytics</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Email support</span>
-                  </li>
-                </ul>
-                <Button className="w-full bg-transparent" variant="outline">
-                  Get Started
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="border-0 shadow-xl bg-white rounded-2xl overflow-hidden relative">
-              <Badge className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black font-semibold px-4 py-1">
-                Most Popular
-              </Badge>
-              <CardContent className="p-8 pt-12">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Pro</h3>
-                <div className="text-4xl font-bold text-gray-900 mb-6">
-                  $59<span className="text-lg text-gray-600 font-normal">/mo</span>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Unlimited quizzes</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Unlimited classrooms</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">AI quiz engine</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Advanced analytics</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Priority support</span>
-                  </li>
-                </ul>
-                <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">
-                  Start Free Trial
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Institution Plan */}
-            <Card className="border-0 shadow-lg bg-white rounded-2xl overflow-hidden">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Institution</h3>
-                <div className="text-4xl font-bold text-gray-900 mb-6">Custom</div>
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Everything in Pro</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Admin dashboard</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Custom onboarding</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-gray-600">Dedicated support</span>
-                  </li>
-                </ul>
-                <Button className="w-full bg-transparent" variant="outline">
-                  Contact Sales
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="space-y-8">
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">How does the AI detect when students might lose interest?</h3>
+              <p className="text-gray-600">Our AI analyzes your PowerPoint content, slide complexity, and presentation patterns to identify optimal moments for engagement. It considers factors like slide duration, content density, and topic transitions.</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Do students need to install any app?</h3>
+              <p className="text-gray-600">No! Students simply scan the QR code displayed in your presentation and access quizzes directly through their mobile browser. No downloads or installations required.</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">What types of assessments can I create?</h3>
+              <p className="text-gray-600">You can create multiple-choice quizzes, true/false questions, short answer prompts, and flashcards. Our AI can also auto-generate questions based on your presentation content.</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">How does the real-time analytics work?</h3>
+              <p className="text-gray-600">As students respond to quizzes, you'll see live engagement metrics, comprehension scores, and individual student performance. The dashboard updates in real-time during your lecture.</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Can I integrate with my existing LMS?</h3>
+              <p className="text-gray-600">Yes! We offer integrations with popular Learning Management Systems like Moodle, Canvas, and Blackboard. Enterprise plans include custom API access for deeper integrations.</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">What about data privacy and security?</h3>
+              <p className="text-gray-600">We follow strict data protection standards. Student responses are anonymized, and all data is encrypted. We're compliant with educational privacy regulations including FERPA and GDPR.</p>
+            </div>
           </div>
         </div>
       </section>
