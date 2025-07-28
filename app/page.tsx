@@ -31,31 +31,18 @@ export default function LandingPage() {
 
   const testimonials = [
     {
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      img: "/placeholder.svg?height=150&width=150",
       quote:
-        "ClassroomAI transformed my lectures completely. Students are now actively participating and I can see their understanding in real-time!",
-      name: "Dr. Sarah Chen",
-      role: "Professor, Stanford University",
+        "Lectures are now more engaging and interactive. Students are more engaged and I can see their understanding in real-time!",
+      name: "Unconvential Learning",
+      role: "",
     },
     {
-      img: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      img: "/placeholder.svg?height=150&width=150",
       quote:
-        "The AI-powered quiz timing is incredible. It knows exactly when students need a break or when to reinforce concepts.",
-      name: "Prof. Maria Rodriguez",
-      role: "Education Technology Lead, MIT",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-      quote:
-        "Setup was effortless and my students love the interactive elements. Engagement scores have never been higher!",
-      name: "Dr. James Wilson",
-      role: "Computer Science, UC Berkeley",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-      quote: "Finally, a tool that makes large lecture halls feel intimate. Every student feels heard and engaged.",
-      name: "Dr. Emily Johnson",
-      role: "Psychology Department, Harvard",
+        "The AI-powered timing is incredible. It knows exactly when to ask questions and when to move on to the next topic.",
+      name: "Effective Learning",
+      role: "",
     },
   ]
 
@@ -259,9 +246,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Designed For the Way You Teach</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Hear from educators who have transformed their classrooms with AI-powered engagement
-            </p>
+            
           </div>
           <TestimonialSlider testimonials={testimonials} />
         </div>

@@ -1,57 +1,57 @@
 import type React from "react"
 import { cn } from "@/lib/utils"
 import {
-  IconAdjustmentsBolt,
-  IconCloud,
-  IconCurrencyDollar,
-  IconEaseInOut,
-  IconHeart,
-  IconHelp,
-  IconRouteAltLeft,
-  IconTerminal2,
-} from "@tabler/icons-react"
+  Brain,
+  QrCode,
+  TrendingUp,
+  Presentation,
+  Target,
+  Users,
+  Shield,
+  Zap,
+} from "lucide-react"
 
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "Built for developers",
-      description: "Built for engineers, developers, dreamers, thinkers and doers.",
-      icon: <IconTerminal2 />,
+      title: "AI-Powered Quiz Generation",
+      description: "Our AI analyzes your PowerPoint presentations to detect engagement drop-off points and automatically generates contextual quizzes.",
+      icon: <Brain />,
     },
     {
-      title: "Ease of use",
-      description: "It's as easy as using an Apple, and as expensive as buying one.",
-      icon: <IconEaseInOut />,
+      title: "Zero-Friction Student Access",
+      description: "Students simply scan a QR code to join sessions — no app downloads, no accounts, no setup required.",
+      icon: <QrCode />,
     },
     {
-      title: "Pricing like no other",
-      description: "Our prices are best in the market. No cap, no lock, no credit card required.",
-      icon: <IconCurrencyDollar />,
+      title: "Real-Time Performance Analytics",
+      description: "Monitor student understanding live with instant feedback on comprehension levels and engagement scores.",
+      icon: <TrendingUp />,
     },
     {
-      title: "100% Uptime guarantee",
-      description: "We just cannot be taken down by anyone.",
-      icon: <IconCloud />,
+      title: "Seamless PowerPoint Integration",
+      description: "Upload your existing presentations and let our AI enhance them with interactive elements automatically.",
+      icon: <Presentation />,
     },
     {
-      title: "Multi-tenant Architecture",
-      description: "You can simply share passwords instead of buying new seats",
-      icon: <IconRouteAltLeft />,
+      title: "Adaptive Learning Engine",
+      description: "AI dynamically adjusts quiz difficulty and timing based on real-time class performance and engagement levels.",
+      icon: <Target />,
     },
     {
-      title: "24/7 Customer Support",
-      description: "We are available a 100% of the time. Atleast our AI Agents are.",
-      icon: <IconHelp />,
+      title: "Multi-Device Compatibility",
+      description: "Works on any device — smartphones, tablets, laptops — ensuring every student can participate.",
+      icon: <Users />,
     },
     {
-      title: "Money back guarantee",
-      description: "If you donot like EveryAI, we will convince you to like us.",
-      icon: <IconAdjustmentsBolt />,
+      title: "Enterprise-Grade Security",
+      description: "FERPA-compliant with end-to-end encryption and anonymous student participation options.",
+      icon: <Shield />,
     },
     {
-      title: "And everything else",
-      description: "I just ran out of copy ideas. Accept my sincere apologies",
-      icon: <IconHeart />,
+      title: "Plug-and-Play Setup",
+      description: "Get started in minutes with pre-built templates and one-click classroom creation.",
+      icon: <Zap />,
     },
   ]
   return (
