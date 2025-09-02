@@ -18,6 +18,48 @@ export function FileUploadCard() {
     inputRef.current?.click()
   }
 
+  // Extract all visible text from the parsed ppt json
+  function extractAllTextFromPpt(parsed: any): { bySlide: string[][]; flat: string[] } {
+    const slides: any[] = Array.isArray(parsed?.slides) ? parsed.slides : Array.isArray(parsed) ? parsed : []
+    const bySlide: string[][] = []
+    const flat: string[] = []
+
+    for (const slide of slides) {
+      const lines: string[] = []
+      const elements = Array.isArray(slide?.pageElements) ? slide.pageElements : []
+      if (elements.length) {
+        for (const el of elements) {
+          const paras: any[] = el?.shape?.text?.paragraphs || []
+          if (!paras.length) continue
+          for (const p of paras) {
+            const spans: any[] = p?.textSpans || []
+            const text = spans
+              .map((s) => (s?.textRun?.content ?? ""))
+              .join("")
+              .trim()
+            if (text) {
+              lines.push(text)
+              flat.push(text)
+            }
+          }
+        }
+      }
+      // Fallback
+      if (!elements.length && Array.isArray(slide?.texts)) {
+        for (const t of slide.texts) {
+          const text = typeof t === "string" ? t : t?.text ?? ""
+          if (text) {
+            lines.push(text)
+            flat.push(text)
+          }
+        }
+      }
+      bySlide.push(lines)
+    }
+
+    return { bySlide, flat }
+  }
+
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
     setIsReady(false)
@@ -55,6 +97,36 @@ export function FileUploadCard() {
       if (typeof window !== "undefined") {
         sessionStorage.setItem("pptParsedData", JSON.stringify(pptJson))
         sessionStorage.setItem("pptParsedFileName", name)
+
+        // Extract and persist all text content for LLM usage later
+        const { bySlide, flat } = extractAllTextFromPpt(pptJson)
+        sessionStorage.setItem("pptTextBySlide", JSON.stringify(bySlide))
+        sessionStorage.setItem("pptTextArray", JSON.stringify(flat))
+        const combined = flat.join("\n")
+        sessionStorage.setItem("pptTextCombined", combined)
+
+        // Fire-and-forget: call backend Gemini API with mock prompt
+        ;(async () => {
+          try {
+            const mockPrompt =
+              "You are given the full text extracted from a PowerPoint deck. Summarize slide-by-slide, list key topics, and propose 5 quiz questions. Keep it concise."
+            const res = await fetch("/api/gemini", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ textCombined: combined, fileName: name, prompt: mockPrompt }),
+            })
+            const json = await res.json()
+            if (res.ok) {
+              sessionStorage.setItem("geminiOutput", json.output || "")
+              sessionStorage.setItem("geminiModel", json.model || "")
+              sessionStorage.removeItem("geminiError")
+            } else {
+              sessionStorage.setItem("geminiError", json?.error || "Gemini call failed")
+            }
+          } catch (e: any) {
+            sessionStorage.setItem("geminiError", e?.message || "Gemini call failed")
+          }
+        })()
       }
       setIsReady(true)
     } catch (err) {

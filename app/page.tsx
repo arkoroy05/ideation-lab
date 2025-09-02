@@ -23,8 +23,10 @@ import { CreativePricingDemo } from "@/components/ui/creative-pricing-demo"
 import Testimonials from "@/components/ui/testimonials-columns"
 import { WhyChooseUsSection } from "@/components/ui/why-choose-us-section"
 import { PluginCard } from "@/components/ui/plugin-card"
+import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
+  const router = useRouter()
   const navItems = [
     { name: "Home", url: "#", icon: Home },
     { name: "Features", url: "#features", icon: BookOpen },
@@ -76,8 +78,8 @@ export default function LandingPage() {
                   placeholder="Enter your school email"
                   className="flex-1 px-4 py-3 bg-gray-100 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
-                <Button className="bg-[#1a1a1a] hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2">
-                  Get demo access
+                <Button onClick={() => {router.push("/ppt")}} className="bg-[#1a1a1a] hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                  Get Started
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>

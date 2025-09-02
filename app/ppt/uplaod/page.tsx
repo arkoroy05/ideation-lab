@@ -6,6 +6,10 @@ import { useEffect, useMemo, useState } from "react"
 export default function UploadPage() {
   const [data, setData] = useState<any | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [geminiOutput, setGeminiOutput] = useState<string>("")
+  const [geminiError, setGeminiError] = useState<string>("")
+  const [geminiModel, setGeminiModel] = useState<string>("")
+  const [combinedText, setCombinedText] = useState<string>("")
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -16,6 +20,14 @@ export default function UploadPage() {
       if (raw) {
         setData(JSON.parse(raw))
       }
+      const out = sessionStorage.getItem("geminiOutput") || ""
+      const err = sessionStorage.getItem("geminiError") || ""
+      const model = sessionStorage.getItem("geminiModel") || ""
+      setGeminiOutput(out)
+      setGeminiError(err)
+      setGeminiModel(model)
+      const comb = sessionStorage.getItem("pptTextCombined") || ""
+      setCombinedText(comb)
     } catch (e) {
       console.error("Failed to load parsed PPT data", e)
     }
@@ -81,6 +93,38 @@ export default function UploadPage() {
             Back
           </Link>
         </div>
+
+        {/* Gemini Result Section */}
+        {(geminiOutput || geminiError) && (
+          <div className="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-base font-semibold text-gray-900">Gemini Analysis</h2>
+              {geminiModel && <span className="text-xs text-gray-500">Model: {geminiModel}</span>}
+            </div>
+            {geminiError ? (
+              <p className="text-sm text-red-600">{geminiError}</p>
+            ) : (
+              <pre className="text-sm text-gray-900 whitespace-pre-wrap">{geminiOutput}</pre>
+            )}
+            {/* Copy buttons */}
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => navigator.clipboard.writeText(geminiOutput)}
+                className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                disabled={!geminiOutput}
+              >
+                Copy Gemini Output
+              </button>
+              <button
+                onClick={() => navigator.clipboard.writeText(combinedText)}
+                className="rounded-md bg-gray-800 px-3 py-1.5 text-xs font-medium text-white hover:bg-black"
+                disabled={!combinedText}
+              >
+                Copy Combined Text
+              </button>
+            </div>
+          </div>
+        )}
 
         {!data && (
           <div className="text-gray-700">No parsed data found. Please upload a .pptx first.</div>
