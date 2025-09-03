@@ -6,10 +6,12 @@ import { useEffect, useMemo, useState } from "react"
 export default function UploadPage() {
   const [data, setData] = useState<any | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
-  const [geminiOutput, setGeminiOutput] = useState<string>("")
+  const [geminiOutput, setGeminiOutput] = useState<string>("") // raw text (optional)
   const [geminiError, setGeminiError] = useState<string>("")
   const [geminiModel, setGeminiModel] = useState<string>("")
   const [combinedText, setCombinedText] = useState<string>("")
+  const [geminiPending, setGeminiPending] = useState<boolean>(false)
+  const [structured, setStructured] = useState<any | null>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -20,16 +22,52 @@ export default function UploadPage() {
       if (raw) {
         setData(JSON.parse(raw))
       }
-      const out = sessionStorage.getItem("geminiOutput") || ""
-      const err = sessionStorage.getItem("geminiError") || ""
-      const model = sessionStorage.getItem("geminiModel") || ""
+      const out = sessionStorage.getItem("geminiSummaryOutput") || ""
+      const err = sessionStorage.getItem("geminiSummaryError") || ""
+      const model = sessionStorage.getItem("geminiSummaryModel") || ""
+      const pending = !!sessionStorage.getItem("geminiSummaryPending")
       setGeminiOutput(out)
       setGeminiError(err)
       setGeminiModel(model)
+      setGeminiPending(pending)
       const comb = sessionStorage.getItem("pptTextCombined") || ""
       setCombinedText(comb)
+      const structuredRaw = sessionStorage.getItem("geminiSummaryStructured")
+      setStructured(structuredRaw ? JSON.parse(structuredRaw) : null)
     } catch (e) {
       console.error("Failed to load parsed PPT data", e)
+    }
+  }, [])
+
+  // Poll sessionStorage while the background request is pending to update UI in-place
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    let timer: number | undefined
+    const tick = () => {
+      try {
+        const pending = !!sessionStorage.getItem("geminiSummaryPending")
+        const out = sessionStorage.getItem("geminiSummaryOutput") || ""
+        const err = sessionStorage.getItem("geminiSummaryError") || ""
+        const model = sessionStorage.getItem("geminiSummaryModel") || ""
+        const structuredRaw = sessionStorage.getItem("geminiSummaryStructured")
+        setGeminiPending(pending)
+        setGeminiOutput(out)
+        setGeminiError(err)
+        setGeminiModel(model)
+        setStructured(structuredRaw ? JSON.parse(structuredRaw) : null)
+        // stop polling once finished and we have final state
+        if (!pending && (out || err)) {
+          if (timer) window.clearInterval(timer)
+        }
+      } catch (_) {
+        // ignore
+      }
+    }
+    // Start polling if pending or until output/error appears
+    tick()
+    timer = window.setInterval(tick, 800)
+    return () => {
+      if (timer) window.clearInterval(timer)
     }
   }, [])
 
@@ -94,35 +132,61 @@ export default function UploadPage() {
           </Link>
         </div>
 
-        {/* Gemini Result Section */}
-        {(geminiOutput || geminiError) && (
+        {/* Next: go to Study */}
+        {structured && !geminiPending && !geminiError && (
+          <div className="mb-8">
+            <Link
+              href="/ppt/study"
+              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Next
+            </Link>
+          </div>
+        )}
+
+        {/* Gemini Summary Section */}
+        {(geminiPending || structured || geminiError) && (
           <div className="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold text-gray-900">Gemini Analysis</h2>
-              {geminiModel && <span className="text-xs text-gray-500">Model: {geminiModel}</span>}
+              <h2 className="text-base font-semibold text-gray-900">Slide Gist & Core Topics</h2>
+              {geminiModel && !geminiPending && (
+                <span className="text-xs text-gray-500">Model: {geminiModel}</span>
+              )}
             </div>
-            {geminiError ? (
+            {geminiPending ? (
+              <div className="animate-pulse space-y-2" role="status" aria-live="polite">
+                <div className="h-3 bg-gray-200 rounded" />
+                <div className="h-3 bg-gray-200 rounded w-11/12" />
+                <div className="h-3 bg-gray-200 rounded w-10/12" />
+                <div className="h-3 bg-gray-200 rounded w-9/12" />
+                <p className="text-xs text-gray-500 mt-2">Analyzing your slides…</p>
+              </div>
+            ) : geminiError ? (
               <p className="text-sm text-red-600">{geminiError}</p>
             ) : (
-              <pre className="text-sm text-gray-900 whitespace-pre-wrap">{geminiOutput}</pre>
+              <div className="space-y-4">
+                {structured?.summary && (
+                  <section>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">Gist</h3>
+                    <p className="text-sm text-gray-800 whitespace-pre-wrap">{structured.summary}</p>
+                  </section>
+                )}
+                {structured?.topics?.length ? (
+                  <section>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Core Topics</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {structured.topics.map((t: string, i: number) => (
+                        <span key={i} className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+                
+              </div>
             )}
-            {/* Copy buttons */}
-            <div className="mt-3 flex gap-2">
-              <button
-                onClick={() => navigator.clipboard.writeText(geminiOutput)}
-                className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
-                disabled={!geminiOutput}
-              >
-                Copy Gemini Output
-              </button>
-              <button
-                onClick={() => navigator.clipboard.writeText(combinedText)}
-                className="rounded-md bg-gray-800 px-3 py-1.5 text-xs font-medium text-white hover:bg-black"
-                disabled={!combinedText}
-              >
-                Copy Combined Text
-              </button>
-            </div>
+            
           </div>
         )}
 

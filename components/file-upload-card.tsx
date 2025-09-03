@@ -105,26 +105,42 @@ export function FileUploadCard() {
         const combined = flat.join("\n")
         sessionStorage.setItem("pptTextCombined", combined)
 
-        // Fire-and-forget: call backend Gemini API with mock prompt
+        // Fire-and-forget: call backend Gemini API (summary mode)
         ;(async () => {
           try {
+            // mark pending and clear previous values for a clean loading state
+            sessionStorage.setItem("geminiSummaryPending", "1")
+            sessionStorage.removeItem("geminiSummaryOutput")
+            sessionStorage.removeItem("geminiSummaryError")
+            sessionStorage.removeItem("geminiSummaryModel")
+            sessionStorage.removeItem("geminiSummaryStructured")
             const mockPrompt =
-              "You are given the full text extracted from a PowerPoint deck. Summarize slide-by-slide, list key topics, and propose 5 quiz questions. Keep it concise."
+              "You are given the full text extracted from a PowerPoint deck. Provide an overall gist, key topics, and slide-by-slide gist points. Keep it concise."
             const res = await fetch("/api/gemini", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ textCombined: combined, fileName: name, prompt: mockPrompt }),
+              body: JSON.stringify({ textCombined: combined, fileName: name, prompt: mockPrompt, mode: "summary" }),
             })
             const json = await res.json()
             if (res.ok) {
-              sessionStorage.setItem("geminiOutput", json.output || "")
-              sessionStorage.setItem("geminiModel", json.model || "")
-              sessionStorage.removeItem("geminiError")
+              sessionStorage.setItem("geminiSummaryOutput", json.output || "")
+              sessionStorage.setItem("geminiSummaryModel", json.model || "")
+              sessionStorage.removeItem("geminiSummaryError")
+              if (json.structured) {
+                sessionStorage.setItem("geminiSummaryStructured", JSON.stringify(json.structured))
+              } else {
+                sessionStorage.removeItem("geminiSummaryStructured")
+              }
             } else {
-              sessionStorage.setItem("geminiError", json?.error || "Gemini call failed")
+              sessionStorage.setItem("geminiSummaryError", json?.error || "Gemini call failed")
+              sessionStorage.removeItem("geminiSummaryStructured")
             }
           } catch (e: any) {
-            sessionStorage.setItem("geminiError", e?.message || "Gemini call failed")
+            sessionStorage.setItem("geminiSummaryError", e?.message || "Gemini call failed")
+            sessionStorage.removeItem("geminiSummaryStructured")
+          } finally {
+            // always clear pending at the end
+            sessionStorage.removeItem("geminiSummaryPending")
           }
         })()
       }
