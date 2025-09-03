@@ -16,11 +16,12 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { textCombined, fileName, prompt, mode } = (await req.json()) as {
+    const { textCombined, fileName, prompt, mode, topics } = (await req.json()) as {
       textCombined?: string
       fileName?: string
       prompt?: string
-      mode?: "summary" | "study"
+      mode?: "summary" | "study" | "placement"
+      topics?: string[]
     }
 
     if (!textCombined || !textCombined.trim()) {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({ model: MODEL_NAME })
 
-    const task: "summary" | "study" = mode === "study" ? "study" : "summary"
+    const task: "summary" | "study" | "placement" = mode === "study" ? "study" : mode === "placement" ? "placement" : "summary"
 
     // Build task-specific prompt and schema
     const promptSummary =
@@ -49,6 +50,18 @@ export async function POST(req: NextRequest) {
   "quizzes": Array<{ "question": string, "options": string[], "correctIndex": number }>
 }`
 
+    const promptPlacement =
+      "Analyze attention span and cognitive load across the presentation. Suggest where to insert quizzes and flashcards to maintain engagement. Consider slide density, transitions, topic shifts, and natural pause points."
+    const schemaPlacement = `\nReturn ONLY valid JSON (no backticks, no markdown) with this exact shape:\n{
+  "suggestions": Array<{
+    "slide": number,              // slide number (1-indexed)
+    "type": "quiz" | "flashcard", // which asset to insert
+    "position": "before" | "after" | "during", // relative to the slide
+    "reason": string,             // concise rationale focused on attention span or content density
+    "notes"?: string              // optional extra notes
+  }>
+}`
+
     const systemPreamble = fileName ? `File: ${fileName}` : undefined
 
     const input = [
@@ -57,8 +70,9 @@ export async function POST(req: NextRequest) {
       "\n---\n",
       "Presentation Text:\n",
       textCombined,
+      task === "placement" && topics?.length ? `\n\nKnown Topics:\n- ${topics.join("\n- ")}` : "",
       "\n---\n",
-      task === "summary" ? schemaSummary : schemaStudy,
+      task === "summary" ? schemaSummary : task === "study" ? schemaStudy : schemaPlacement,
     ].join("")
 
     const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: input }] }] })
@@ -92,10 +106,14 @@ export async function POST(req: NextRequest) {
           topics: Array.isArray(structured.topics) ? structured.topics : [],
           bySlide: Array.isArray(structured.bySlide) ? structured.bySlide : [],
         }
-      } else {
+      } else if (task === "study") {
         pruned = {
           flashcards: Array.isArray(structured.flashcards) ? structured.flashcards : [],
           quizzes: Array.isArray(structured.quizzes) ? structured.quizzes : [],
+        }
+      } else if (task === "placement") {
+        pruned = {
+          suggestions: Array.isArray(structured.suggestions) ? structured.suggestions : [],
         }
       }
     }
